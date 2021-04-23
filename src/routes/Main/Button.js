@@ -11,7 +11,7 @@ export default class Button extends React.Component {
           userSelect: "none",
           cursor: "pointer",
           marginRight: 15,
-          background: "#1B9AF7",
+          background: this.props.background || "#1B9AF7",
           height: 30,
           padding: "0 30px",
           color: "#fff",

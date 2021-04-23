@@ -72,7 +72,8 @@ function Watermark(canvas, opt = {}) {
 
   const _draw = () => {
     drawImage();
-    addWatermark();
+    addMarks();
+    // addWatermark();
   };
   const drawImage = () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -115,6 +116,93 @@ function Watermark(canvas, opt = {}) {
     ctx.fillStyle = pat;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
   };
+  const addMarks = () => {
+    addRect()
+    addJingDu()
+    addWeiDu()
+    addJinDu()
+    addMingCheng()
+    addDiDian()
+    addShiJian()
+  }
+  const rectWidth = 760;
+  const rectHeight = 430;
+  const space = 58
+  const textColor = 'rgba(255, 255, 255, 0.8)'
+  const textFont = '40px 宋体'
+  const addRect = () => {
+    // const y = 430
+    const y = 430
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.5)'
+    // ctx.fillRect(0, img_height - y, 760, y)
+    ctx.fillRect(0, img_height - y, rectWidth, y)
+  }
+
+  const addJingDu = () => {
+    const value = userOptions.jingDu
+    ctx.font = textFont
+    ctx.fillStyle = textColor
+    ctx.fillText(`经度:  ${value}`, 26, img_height - rectHeight + space)
+  }
+
+  const addWeiDu = () => {
+    const value = userOptions.weiDu
+    ctx.font = textFont
+    ctx.fillStyle = textColor
+    ctx.fillText(`纬度:  ${value}`, 26, img_height - rectHeight+ space * 2)
+  }
+
+  const addJinDu = () => {
+    const value = userOptions.jinDu
+    ctx.font = textFont
+    ctx.fillStyle = textColor
+    ctx.fillText(`精度:  ±${value}`, 26, img_height - rectHeight + space * 3)
+  }
+
+  const addMingCheng = () => {
+    const value = userOptions.mingCheng
+    ctx.font = textFont
+    ctx.fillStyle = textColor
+    fillTextWrap(`名称:  ${value}`, 26, img_height - rectHeight + space * 4)
+  }
+
+  const addDiDian = () => {
+    const value = userOptions.diDian
+    ctx.font = textFont
+    ctx.fillStyle = textColor
+    fillTextWrap(`地点:  ${value}`, 26, img_height - rectHeight + space * 6)
+  }
+
+  const addShiJian = () => {
+    const value = userOptions.shiJian
+    ctx.font = textFont
+    ctx.fillStyle = textColor
+    fillTextWrap(`时间:  ${value}`, 26, img_height - rectHeight + space * 7)
+  }
+
+  const fillTextWrap = (text, x, y) => {
+    const maxWidth = 700
+    const lineHeight = space
+    // 字符串分割为数组
+    const arrText = text.split('')
+    // 当前字符串及宽度
+    let currentText = ''
+    let currentWidth
+    for (let letter of arrText) {
+        currentText += letter
+        currentWidth = ctx.measureText(currentText).width
+        if (currentWidth > maxWidth) {
+            ctx.fillText(currentText, x, y)
+            currentText = ''
+            x += 120
+            y += lineHeight
+        }
+    }
+    if (currentText) {
+        ctx.fillText(currentText, x, y)
+    }
+  }
+
   this.draw = dataURL => {
     step = 0;
     img = new Image();
@@ -146,7 +234,7 @@ function Watermark(canvas, opt = {}) {
   };
   this.setOptions = (obj = {}) => {
     userOptions = obj;
-    createWatermarkCanvas();
+    // createWatermarkCanvas();
     if (!img) {
       return;
     }
