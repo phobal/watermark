@@ -1,4 +1,6 @@
 import Canvas2Image from "../../utils/Canvas2Image";
+// import CompanySeal from './Seal'
+
 function canvasTextAutoLine(ctx, width, str, initX, initY, lineHeight = 20) {
   // ctx.fillText(str, 0, lineHeight);
   // return;
@@ -117,68 +119,56 @@ function Watermark(canvas, opt = {}) {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
   };
   const addMarks = () => {
-    addRect()
-    addJingDu()
-    addWeiDu()
-    addJinDu()
-    addMingCheng()
-    addDiDian()
-    addShiJian()
+    addTitle();
+    addAgentName();
+    addYear();
+    addMonth();
+    addDay();
+    // addSeal();
   }
-  const rectWidth = 760;
   const rectHeight = 430;
   const space = 58
-  const textColor = 'rgba(255, 255, 255, 0.8)'
-  const textFont = '40px 宋体'
-  const addRect = () => {
-    // const y = 430
-    const y = 430
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.5)'
-    // ctx.fillRect(0, img_height - y, 760, y)
-    ctx.fillRect(0, img_height - y, rectWidth, y)
-  }
+  const textColor = 'rgba(0, 0, 0, 0.6)'
+  const textFont = '400 32px 宋体'
 
-  const addJingDu = () => {
-    const value = userOptions.jingDu
+  const addTitle = () => {
+    const value = userOptions.title
     ctx.font = textFont
     ctx.fillStyle = textColor
-    ctx.fillText(`经度:  ${value}`, 26, img_height - rectHeight + space)
+    fillTextWrap(`${value}`, 580, img_height - 2200 + space)
   }
 
-  const addWeiDu = () => {
-    const value = userOptions.weiDu
+  const addAgentName = () => {
+    const value = userOptions.agent
     ctx.font = textFont
     ctx.fillStyle = textColor
-    ctx.fillText(`纬度:  ${value}`, 26, img_height - rectHeight+ space * 2)
+    fillTextWrap(`${value}`, 1050, img_height - 1370 + space)
   }
 
-  const addJinDu = () => {
-    const value = userOptions.jinDu
+  const addYear = () => {
+    const value = userOptions.year
     ctx.font = textFont
     ctx.fillStyle = textColor
-    ctx.fillText(`精度:  ±${value}`, 26, img_height - rectHeight + space * 3)
+    fillTextWrap(`${value}`, img_width - 470, img_height - 300 + space)
+  }
+  const addMonth = () => {
+    const value = userOptions.month
+    const diffWidth = String(value).length > 1 ? 330 : 320
+    ctx.font = textFont
+    ctx.fillStyle = textColor
+    fillTextWrap(`${value}`, img_width - diffWidth, img_height - 300 + space)
+  }
+  const addDay = () => {
+    const value = userOptions.day
+    const diffWidth = String(value).length > 1 ? 235 : 225
+    ctx.font = textFont
+    ctx.fillStyle = textColor
+    fillTextWrap(`${value}`, img_width - diffWidth, img_height - 300 + space)
   }
 
-  const addMingCheng = () => {
-    const value = userOptions.mingCheng
-    ctx.font = textFont
-    ctx.fillStyle = textColor
-    fillTextWrap(`名称:  ${value}`, 26, img_height - rectHeight + space * 4)
-  }
-
-  const addDiDian = () => {
-    const value = userOptions.diDian
-    ctx.font = textFont
-    ctx.fillStyle = textColor
-    fillTextWrap(`地点:  ${value}`, 26, img_height - rectHeight + space * 6)
-  }
-
-  const addShiJian = () => {
-    const value = userOptions.shiJian
-    ctx.font = textFont
-    ctx.fillStyle = textColor
-    fillTextWrap(`时间:  ${value}`, 26, img_height - rectHeight + space * 7)
-  }
+  // const addSeal = () => {
+  //   new CompanySeal({ctx})
+  // }
 
   const fillTextWrap = (text, x, y) => {
     const maxWidth = 700
@@ -216,6 +206,7 @@ function Watermark(canvas, opt = {}) {
         img_height = img.height;
       }
       _draw();
+      console.log(img_width, img_height)
     };
     img.src = dataURL;
   };
