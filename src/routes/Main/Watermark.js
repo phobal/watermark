@@ -1,4 +1,4 @@
-import Canvas2Image from "../../utils/Canvas2Image";
+import { jsPDF } from "jspdf";
 // import CompanySeal from './Seal'
 
 function canvasTextAutoLine(ctx, width, str, initX, initY, lineHeight = 20) {
@@ -221,7 +221,11 @@ function Watermark(canvas, opt = {}) {
     if (!img) {
       return;
     }
-    Canvas2Image.saveAsJPEG(canvas);
+    const pdf = new jsPDF();
+    const rate = 12
+    console.log(canvas.toDataURL('png'))
+    pdf.addImage(canvas.toDataURL('png'), 'PNG', 15, 0, img_width / rate, img_height / rate);
+    pdf.save(`${userOptions.title}委托书.pdf`);
   };
   this.setOptions = (obj = {}) => {
     userOptions = obj;
