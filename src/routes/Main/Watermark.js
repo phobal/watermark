@@ -1,77 +1,12 @@
 import { jsPDF } from "jspdf";
 // import CompanySeal from './Seal'
 
-function canvasTextAutoLine(ctx, width, str, initX, initY, lineHeight = 20) {
-  // ctx.fillText(str, 0, lineHeight);
-  // return;
-  var lineWidth = 0;
-  var canvasWidth = width;
-  var lastSubStrIndex = 0;
-  for (let i = 0; i < str.length; i++) {
-    lineWidth += ctx.measureText(str[i]).width;
-
-    if (lineWidth > canvasWidth - initX) {
-      //减去initX,防止边界出现的问题
-      ctx.fillText(str.substring(lastSubStrIndex, i), initX, initY);
-      initY += lineHeight;
-      lineWidth = 0;
-      lastSubStrIndex = i;
-    }
-    if (i === str.length - 1) {
-      ctx.fillText(str.substring(lastSubStrIndex, i + 1), initX, initY);
-    }
-  }
-}
-
 function Watermark(canvas, opt = {}) {
   let img;
   let step = 0;
-  let cw = document.createElement("canvas");
-  // document.getElementById("test").appendChild(cw);
+  const ctx = canvas.getContext("2d");
   let img_width, img_height;
   let userOptions = opt;
-  const getOptions = () => {
-    const defaultOptions = {
-      text: "仅用于办理XXXX，他用无效。",
-      fontSize: 23,
-      fillStyle: "rgba(100, 100, 100, 0.4)",
-      watermarkWidth: 280,
-      watermarkHeight: 180
-    };
-    const options = { ...defaultOptions, ...userOptions };
-    if (options.fontSize < 10) {
-      options.fontSize = 10;
-    } else {
-      options.fontSize = parseInt(options.fontSize, 10);
-    }
-    if (options.watermarkWidth < 100) {
-      options.watermarkWidth = 100;
-    }
-    if (options.watermarkHeight < 100) {
-      options.watermarkHeight = 100;
-    }
-    return options;
-  };
-  const createWatermarkCanvas = () => {
-    const { text, fontSize, fillStyle, watermarkWidth, watermarkHeight } = getOptions();
-    const rotate = 20;
-    const wctx = cw.getContext("2d");
-    //清除小画布
-    // wctx.clearRect(0, 0, cw.width, cw.height);
-    const { sqrt, pow, sin, tan } = Math;
-    cw.width = sqrt(pow(watermarkWidth, 2) + pow(watermarkHeight, 2));
-    cw.height = watermarkHeight;
-
-    wctx.font = `${fontSize}px 黑体`;
-
-    //文字倾斜角度
-    wctx.rotate(-rotate * Math.PI / 180);
-    wctx.fillStyle = fillStyle;
-    const Y = parseInt(sin(rotate * Math.PI / 180) * watermarkWidth, 10);
-    const X = -parseInt(Y / tan((90 - rotate) * Math.PI / 180), 10);
-    canvasTextAutoLine(wctx, watermarkWidth, text, X + 10, Y + fontSize + 20, fontSize * 1.4);
-  };
-
   const _draw = () => {
     drawImage();
     addMarks();
@@ -112,12 +47,6 @@ function Watermark(canvas, opt = {}) {
         break;
     }
   };
-  const addWatermark = () => {
-    //平铺--重复小块的canvas
-    var pat = ctx.createPattern(cw, "repeat");
-    ctx.fillStyle = pat;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-  };
   const addMarks = () => {
     addTitle();
     addAgentName();
@@ -126,7 +55,6 @@ function Watermark(canvas, opt = {}) {
     addDay();
     // addSeal();
   }
-  const rectHeight = 430;
   const space = 58
   const textColor = 'rgba(0, 0, 0, 0.6)'
   const textFont = '400 32px 宋体'
@@ -223,7 +151,6 @@ function Watermark(canvas, opt = {}) {
     }
     const pdf = new jsPDF();
     const rate = 12
-    console.log(canvas.toDataURL('png'))
     pdf.addImage(canvas.toDataURL('png'), 'PNG', 15, 0, img_width / rate, img_height / rate);
     pdf.save(`${userOptions.title}委托书.pdf`);
   };
@@ -235,11 +162,6 @@ function Watermark(canvas, opt = {}) {
     }
     _draw();
   };
-  const watermarkCanvas = document.createElement("canvas");
-  watermarkCanvas.width = "160px";
-  watermarkCanvas.height = "100px";
-  const ctx = canvas.getContext("2d");
-  createWatermarkCanvas();
 }
 
 export default Watermark;
